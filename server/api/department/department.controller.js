@@ -13,8 +13,6 @@ exports.index = function(req, res) {
 
 exports.createAll = function(req, res) {
   var Departments = Parse.Object.extend('Departments');
-
-
   var deps = [
     { name: 'Aboriginal Studies', url: 'http://www.artsandscience.utoronto.ca/ofr/timetable/winter/asabs.html'},
     { name: 'American Studies', url: 'http://www.artsandscience.utoronto.ca/ofr/timetable/winter/asabs.html'},
@@ -106,14 +104,10 @@ exports.createAll = function(req, res) {
       },
       function (err) {
         console.log(err);
-      }
-
-
-
+      });
       if (i == deps.length - 1) {
         return res.status(201).json(department);
       }
-    });
   };
 
 
