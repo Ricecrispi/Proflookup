@@ -14,4 +14,16 @@ angular.module('proflookupApp')
       });
     };
 
+    $scope.findProfURL = function () {
+      Restangular.all('').post().then(function () {
+
+      });
+    };
+
+    $scope.getRatings = function () {
+      Restangular.all('api/profs/course_instr_ratings').getList().then(function (data) {
+        $scope.professors = data;
+      });
+    };
+
   }]);
