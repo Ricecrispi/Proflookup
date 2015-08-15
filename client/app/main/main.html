@@ -6,8 +6,29 @@
   <br>
   <div class="form">
     <input id="course-form" class="form-control" ng-model="course"/>
-    <button class="btn btn-default" ng-click="getRatings()">Gi</button>
     <span>E.g. ECO100Y1, BIO120H1F, CSC108H1S.</span>
+    <br>
+    <br>
+    <button class="btn btn-default" ng-click="getRatings()">Go!</button>
+    <br>
+    <br>
+    <br>
+    <table ng-show="professor" class="table table-striped">
+      <tr>
+        <th>Overall Quality</th>
+        <th>Helpfulness</th>
+        <th>Clarify</th>
+        <th>Easiness</th>
+        <th>RMP</th>
+      </tr>
+      <tr ng-repeat="professor in professors">
+        <td>{{ professor.overall }}</td>
+        <td>{{ professor.helpfulness }}</td>
+        <td>{{ professor.clarity }}</td>
+        <td>{{ professor.easiness }}</td>
+        <td><a href="{{ professor.url }}">View</a> </td>
+      </tr>
+    </table>
 
   </div>
 </div>
