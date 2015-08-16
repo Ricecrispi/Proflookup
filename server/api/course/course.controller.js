@@ -2,6 +2,7 @@
 
 var _ = require('lodash');
 var Xray = require('x-ray');
+var async = require('async');
 var x = Xray();
 var config = require('../../config/environment');
 var Parse = require('parse').Parse;
@@ -18,49 +19,85 @@ exports.createAll = function (req, res) {
   var Departments = Parse.Object.extend('Departments');
   var queryDepartment = new Parse.Query(Departments);
   queryDepartment.find({
-    success: function (results) {
-      var j;
-      for (j = 0; j < results.length; j++) {
-        x(results[j].attributes.url, 'font', [{data: ''}])(function (err, data) {
-          var dep = results[j];
-          console.log(dep);
-          var isProf = false;
+    success: function (deps) {
+      async.forEachOf(deps, function (dep, callback) {
+        x(dep.attributes.url, 'font', [{content: ''}])(function (err, lines) {
           var i;
-          for (i = 0; i < data.length; i++) {
-            var entry = data[i].data;
-            if (exports.containsAbbr(entry, dep.attributes.abr)) {
-              if (i != 0) {
-                course.set('profList', profList);
-                course.set('code', entry);
-                course.save();
-              };
+          for (i = 0; i < lines.length; i++) {
+            console.log('line: ' + lines[i].content);
+            if (exports.isCourseCode(lines[i].content, dep.attributes.abr)) {
               var course = new Courses();
               course.set('department', dep);
-              var profList = [];
-            } else if (entry.length == '5' && entry[0] == 'L') {
-              isProf = true;
-              i = i + 3;
-            } else if (isProf) {
-              isProf = false;
-              profList.push(entry);
-            };
-          };
-          course.set('profList', profList);
-          course.save();
+              course.set('code', lines[i].content + lines[i + 1].content);
+              course.save().then (function (saved) {
+                 // console.log(saved.attributes.code);
+                }, function (err) {
+                  console.log('err');
+                });
+              i++;
+            }
+            ;
+          }
+          ;
+          callback();
         });
-      };
-      //res.status(200).end();
+      });
     }
   });
+  res.status(200).end();
 };
 
-exports.containsAbbr = function (str, abbr) {
+
+//exports.createAll = function (req, res) {
+//  var Courses = Parse.Object.extend('Courses');
+//  var Departments = Parse.Object.extend('Departments');
+//  var queryDepartment = new Parse.Query(Departments);
+//  queryDepartment.find({
+//    success: function (results) {
+//      var j;
+//      for (j = 0; j < results.length; j++) {
+//        x(results[j].attributes.url, 'font', [{data: ''}])(function (err, data) {
+//          var dep = results[j];
+//          console.log(dep);
+//          var isProf = false;
+//          var i;
+//          for (i = 0; i < data.length; i++) {
+//            var entry = data[i].data;
+//            if (exports.containsAbbr(entry, dep.attributes.abr)) {
+//              if (i != 0) {
+//                course.set('profList', profList);
+//                course.set('code', entry);
+//                course.save();
+//              };
+//              var course = new Courses();
+//              course.set('department', dep);
+//              var profList = [];
+//            } else if (entry.length == '5' && entry[0] == 'L') {
+//              isProf = true;
+//              i = i + 3;
+//            } else if (isProf) {
+//              isProf = false;
+//              profList.push(entry);
+//            };
+//          };
+//          course.set('profList', profList);
+//          course.save();
+//        });
+//      };
+//      //res.status(200).end();
+//    }
+//  });
+//};
+
+exports.isCourseCode = function (str, abbr) {
   var i;
   for (i = 0; i < abbr.length; i++) {
     if (str.indexOf(abbr[i]) != -1) {
-      return true;
-    };
-  };
+      return str.length == 8;
+    }
+    ;
+  }
+  ;
   return false;
 };
 
