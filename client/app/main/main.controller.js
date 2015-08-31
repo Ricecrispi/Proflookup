@@ -2,27 +2,16 @@
 
 angular.module('proflookupApp')
   .controller('MainCtrl', ['$scope', 'Restangular', function ($scope, Restangular) {
-
-    $scope.createDepartments = function () {
-      Restangular.all('api/departments/create_all').post().then(function () {
-
-      });
-    };
-
-    $scope.createCourses = function () {
-      Restangular.all('api/courses/create_all').post().then(function () {
-      });
-    };
-
-    $scope.findProfURL = function () {
-      Restangular.all('').post().then(function () {
-
-      });
-    };
+    $scope.professors = [];
 
     $scope.getRatings = function () {
-      Restangular.all('api/profs/course_instr_ratings').getList().then(function (data) {
+      $scope.professors = [];
+      Restangular.all('api/profs/course_instr_ratings/' + $scope.course).getList().then(function (data) {
         $scope.professors = data;
+        $scope.error = false;
+        $scope.noResults = $scope.professors.length == 0;
+      }, function() {
+        $scope.error = true;
       });
     };
 

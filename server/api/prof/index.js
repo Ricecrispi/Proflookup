@@ -5,7 +5,8 @@ var controller = require('./prof.controller');
 
 var router = express.Router();
 
-router.get('/', controller.index);
-router.get('/course_instr_ratings', controller.getRatings);
+//router.get('/', controller.index);
+router.get('/course_instr_ratings/:course', controller.getRatings);
+//router.post('/create_all', controller.createAll);
 
 module.exports = router;

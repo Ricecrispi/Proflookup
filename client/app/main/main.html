@@ -1,35 +1,51 @@
 <div id="main-container">
   <br>
-  <button class="btn btn-default" ng-click="createDepartments()">Load Departments</button>
-  <button class="btn btn-default" ng-click="createCourses()">Load Courses</button>
   <br>
   <br>
-  <div class="form">
-    <input id="course-form" class="form-control" ng-model="course"/>
-    <span>E.g. ECO100Y1, BIO120H1F, CSC108H1S.</span>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <div class="text-center">
+    <h1 id="prof-lookup-title">P R O F  L O O K U P</h1>
+    <div class="form">
+      <input id="course-form" class="form-control" ng-model="course"/>
+      <span>E.g. eco100y1y, bio120h1f, csc108h1s.</span>
+      <br>
+      <br>
+      <button id="search-button" class="btn btn-primary" ng-click="getRatings()">Search</button>
+    </div>
+  </div>
     <br>
     <br>
-    <button class="btn btn-default" ng-click="getRatings()">Go!</button>
     <br>
-    <br>
-    <br>
-    <table ng-show="professor" class="table table-striped">
+    <table id="prof-table" ng-show="professors.length != 0" class="table table-hover">
       <tr>
-        <th>Overall Quality</th>
+        <th>Professor Name</th>
+       <!--// <th>Overall Quality</th>-->
         <th>Helpfulness</th>
         <th>Clarify</th>
         <th>Easiness</th>
-        <th>RMP</th>
+        <th>RateMyProf Link</th>
       </tr>
       <tr ng-repeat="professor in professors">
-        <td>{{ professor.overall }}</td>
+        <td>{{ professor.name }}</td>
+        <!--<td>{{ professor.grade }}</td>-->
         <td>{{ professor.helpfulness }}</td>
         <td>{{ professor.clarity }}</td>
         <td>{{ professor.easiness }}</td>
-        <td><a href="{{ professor.url }}">View</a> </td>
+        <td><a id="rmp-url" href="{{ professor.url }}">View</a> </td>
       </tr>
     </table>
 
-  </div>
+    <alert ng-show="noResults" type="danger" ng-click="noResults = false" close="!noResults">
+      No professor results were found.
+    </alert>
+
+    <alert ng-show="error" type="danger" ng-click="error = false" close="!noResults">
+      An error occurred. Perhaps the course you are searching for doesn't exist.
+    </alert>
+
 </div>
 
